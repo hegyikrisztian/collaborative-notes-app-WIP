@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --split-text-stagger: 100ms;
 }
 
 @theme inline {
@@ -10,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --app-error: 
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +22,91 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  color: rgb(223, 223, 223);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+::view-transition-new(.slide-up) {
+  animation: 250ms ease-in 250ms both fade, 250ms ease-in 250ms slide-y;
+}
+
+::view-transition-old(.slide-down) {
+  animation: 250ms ease-out both fade reverse, 250ms ease-out slide-y reverse;
+}
+
+.backdrop-blur-transition {
+  animation: 300ms ease-in forwards backdrop-blur;
+}
+
+.new-note-form-transition {
+  transform: translateY(100vh);
+  opacity: 0;
+  animation: 150ms ease-in-out forwards slide-in-view-y;
+}
+
+@keyframes backdrop-blur {
+  from {
+    backdrop-filter: blur(0);
+  }
+  to {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@keyframes fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-y {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes slide-in-view-y {
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+
+.split-text {
+  transform: translateY(200px);
+  /* animation: 300ms ease-in var(--split-text-stagger) both reveal-text; */
+}
+
+@keyframes reveal-text {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(200px);
+  }
+}
+
+.header-transition {
+  animation: 400ms ease-in-out forwards header-slide-transition;
+}
+
+@keyframes header-slide-transition {
+  from {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
