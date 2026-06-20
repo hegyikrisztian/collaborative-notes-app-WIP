@@ -1,6 +1,6 @@
 "use client";
 import { PlusIcon } from "@heroicons/react/16/solid";
-import { CreateNote } from "./create-note";
+import { CreateNote } from "./modals/create-note";
 import { startTransition, useState } from "react";
 
 export function NewNote() {

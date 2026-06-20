@@ -1,7 +1,6 @@
 "use server";
 import postgres from "postgres";
 import { z } from "zod";
-import { v4 as uuid } from "uuid";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -18,6 +17,16 @@ const NoteSchema = z.object({
 
 const EditNoteContentSchema = NoteSchema.pick({ content: true });
 type EditNoteState = {
+    message: string
+}
+
+const AddUsersToNoteSchema = z.object({
+    users: z.array(z.object({
+        id: z.uuidv4(),
+        name: z.string()
+    }))
+})
+type AddUsersToNoteState = {
     message: string
 }
 
@@ -79,4 +88,24 @@ export async function deleteNote(id: string) {
     
     revalidatePath('/notes');
     redirect('/notes');
+}
+
+export async function addUsersToNote(id: string, state: AddUsersToNoteState, formData: FormData): Promise<AddUsersToNoteState> {
+    try {
+        console.log(formData);
+        const { users } = AddUsersToNoteSchema.parse({
+            users: formData.get('users')
+        });
+
+        if (!users.length)
+            return { message: 'Provide users to addUsersToNote' };
+
+        const dbOps = users.map(user => sql`insert into users_notes note_id, creator_id values (${id}, ${user.id}) if not exists (select 1 from users_notes where note_id = ${id} and creator_id = ${user.id})`);
+        await Promise.all(dbOps);
+        return { message: '' };
+    }
+    catch (error) {
+        console.error(`Error adding users to note: ${error}`);
+        throw new Error(`Error adding users to note: ${error}`);
+    }
 }
