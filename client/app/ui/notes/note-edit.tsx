@@ -3,40 +3,37 @@ import { Note } from "../../definitions";
 import { editNoteContent } from "../../lib/actions/notes";
 import { ChangeEvent, useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { Breadcrumbs } from "../breadcrumbs";
-import { DeleteNote } from "./buttons/note-delete";
 import { PencilIcon, XMarkIcon } from "@heroicons/react/16/solid";
-import { io, Socket } from "socket.io-client";
-import AddUsersModal from "./modals/add-users-note";
 import { NoteActions } from "./note-actions";
 
 const initialState = {
     message: ''
 }
 
-let socket: Socket;
 
 export function NoteEdit({ note }: { note: Note }) {
-    const [isAddUsersOpen, setIsAddUsersOpen] = useState(true);
+    const [ws, setWs] = useState<null | WebSocket>(new WebSocket('ws://localhost:8081'))  // TODO: replace with url from env
 
     const [internalContent, setInternalContent] = useState<string>(note.content);
     const editNoteContentWithId = editNoteContent.bind(null, note.id);
     const [state, editNoteContentWithIdFormAction, isPending] = useActionState(editNoteContentWithId, initialState)
 
+
     function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
-        setInternalContent(event.target.value)
-        socket.emit('note-content-change', {
-            noteId: note.id,
-            content: event.target.value
-        })
+        // setInternalContent(event.target.value)
+        // socket.emit('note-content-change', {
+        //     noteId: note.id,
+        //     content: event.target.value
+        // })
     }
 
     async function socketInitializer() {
-        await fetch('/api/socket');
-        socket = io();
+        // await fetch('/api/socket');
+        // socket = io();
 
-        socket.on(`note-content-${note.id}-changed`, (content) => {
-            setInternalContent(content);
-        });
+        // socket.on(`note-content-${note.id}-changed`, (content) => {
+        //     setInternalContent(content);
+        // });
     }
 
     useEffect(() => {

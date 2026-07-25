@@ -50,32 +50,9 @@ export async function editNoteContent(id: string, state: EditNoteState, formData
     redirect('/notes');
 }
 
-// export async function editNote(id: string, formData: FormData) {
-//     try {
-//         const { title, content, creator } = CreateNoteSchema.parse({
-//             title: formData.get('title'),
-//             content: formData.get('content'),
-//             creator: formData.get('creator')
-//         });
-
-//         await sql`
-//             UPDATE notes
-//             SET title = ${title}, content = ${content}, creator = ${creator}, last_modified = ${new Date(Date.now())} 
-//             WHERE id = ${id}
-//         `;
-
-//     }
-//     catch (error) {
-//         console.error('DB error in editNote ', error );
-//         throw new Error('Error editing note');
-//     }
-    
-//     revalidatePath('/notes');
-//     redirect('/notes');
-// }
-
 export async function deleteNote(id: string) {
     try {
+        await sql`DELETE FROM users_notes WHERE note_id = ${id}`
         await sql`DELETE FROM notes WHERE id = ${id}`;
     }
     catch (error) {
