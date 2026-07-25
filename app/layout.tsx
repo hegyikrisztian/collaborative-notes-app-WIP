@@ -28,7 +28,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex flex-col gap-3.5 justify-center items-center bg-gray-900 p-0 m-auto h-dvh">
+      <body className="flex flex-col gap-3.5 justify-center items-center bg-gray-900 p-0 m-0 h-dvh">
         <Header />
         {children}
       </body>

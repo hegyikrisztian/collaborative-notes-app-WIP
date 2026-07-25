@@ -7,6 +7,7 @@ import { DeleteNote } from "./buttons/note-delete";
 import { PencilIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { io, Socket } from "socket.io-client";
 import AddUsersModal from "./modals/add-users-note";
+import { NoteActions } from "./note-actions";
 
 const initialState = {
     message: ''
@@ -23,7 +24,6 @@ export function NoteEdit({ note }: { note: Note }) {
 
     function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
         setInternalContent(event.target.value)
-        console.log(socket);
         socket.emit('note-content-change', {
             noteId: note.id,
             content: event.target.value
@@ -75,10 +75,7 @@ export function NoteEdit({ note }: { note: Note }) {
                         {/*  */}
 
                     </div>
-                    <div className="flex flex-row gap-3">
-                        <button onClick={() => setIsAddUsersOpen(true)} className="flex gap-2 disabled:opacity-50 rounded-full px-4 py-2 text-black bg-blue-50 not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md">+ Add users</button>
-                        <DeleteNote id={note.id}/>
-                    </div>
+                    <NoteActions id={note.id}/>
                 </div>
                 <form className="flex flex-col gap-1.5 w-full h-full" action={editNoteContentWithIdFormAction}>
                     <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
@@ -94,7 +91,6 @@ export function NoteEdit({ note }: { note: Note }) {
                     </div>
                 </form>
             </div>
-            <AddUsersModal isOpen={isAddUsersOpen} handleClose={() => setIsAddUsersOpen(false)}/>
         </>
     )
 }

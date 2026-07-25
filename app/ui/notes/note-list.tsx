@@ -1,8 +1,8 @@
 import { fetchNotes } from "@/app/lib/data";
-import { NewNote } from "./new-note-card";
 import NoteCard from "./note-card";
 import { verifySession } from "@/app/lib/session";
 import { redirect } from "next/navigation";
+import { CreateNote } from "./modals/create-note";
 
 const NoteList = async () => {
     const { userId } = await verifySession();
@@ -17,7 +17,7 @@ const NoteList = async () => {
             {notes.map((note) => (
                 <NoteCard key={note.id} note={note}/>
             ))}
-            <NewNote />
+            <CreateNote />
         </>
     );
 }

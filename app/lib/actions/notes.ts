@@ -21,10 +21,7 @@ type EditNoteState = {
 }
 
 const AddUsersToNoteSchema = z.object({
-    users: z.array(z.object({
-        id: z.uuidv4(),
-        name: z.string()
-    }))
+    users: z.string()
 })
 type AddUsersToNoteState = {
     message: string
@@ -92,16 +89,23 @@ export async function deleteNote(id: string) {
 
 export async function addUsersToNote(id: string, state: AddUsersToNoteState, formData: FormData): Promise<AddUsersToNoteState> {
     try {
-        console.log(formData);
+        console.log(id);
         const { users } = AddUsersToNoteSchema.parse({
-            users: formData.get('users')
+            users: formData.get('selectedUsers')
         });
 
-        if (!users.length)
+        if (!users)
             return { message: 'Provide users to addUsersToNote' };
 
-        const dbOps = users.map(user => sql`insert into users_notes note_id, creator_id values (${id}, ${user.id}) if not exists (select 1 from users_notes where note_id = ${id} and creator_id = ${user.id})`);
-        await Promise.all(dbOps);
+        const userIds = users.split(',');
+        const usersNotes = userIds.map(userId => (
+            {
+                note_id: id,
+                creator_id: userId
+            }
+        ));
+        console.log(usersNotes);
+        await sql`insert into users_notes ${ sql(usersNotes) }`;
         return { message: '' };
     }
     catch (error) {
