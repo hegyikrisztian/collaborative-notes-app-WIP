@@ -16,9 +16,6 @@ export async function POST(request: Request) {
     try {
         const session = await verifySession();
 
-        if (!session)
-            redirect('/login');
-
         const body = await request.json();  // TBD logged user
         console.log(body);
         if (!body) {
