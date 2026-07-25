@@ -6,9 +6,6 @@ import { CreateNote } from "./modals/create-note";
 
 const NoteList = async () => {
     const { userId } = await verifySession();
-
-    if (!userId)
-        redirect('/login');
     
     const notes = await fetchNotes(userId as string);
 

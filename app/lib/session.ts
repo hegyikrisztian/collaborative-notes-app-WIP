@@ -4,7 +4,6 @@ import { jwtVerify, SignJWT } from "jose";
 import { SessionPayload } from "./definitions";
 import { cookies } from "next/headers";
 import { cache } from 'react';
-import { redirect } from 'next/navigation';
 
 const secret = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secret);
@@ -29,6 +28,17 @@ async function decrypt(session: string | undefined = '') {
     }
 }
 
+export async function verifySessionCookie(cookie: string | undefined) {
+    if (!cookie)
+        return { isAuthenticated: false, userId: undefined }
+
+    const session = await decrypt(cookie);
+    if (!session?.userId)
+        return { isAuthenticated: false, userId: undefined }
+
+    return { isAuthenticated: true, userId: session.userId }
+}
+
 export async function createSession(userId: string) {
     const expiresAt = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
     const session = await encrypt({ userId, expiresAt });
@@ -51,12 +61,5 @@ export const verifySession = cache(async () => {
     const cookieStore = await cookies();
     
     const cookie = cookieStore.get('session')?.value
-    if (!cookie) 
-        return { isAuthenticated: false, userId: undefined }
-
-    const session = await decrypt(cookie);
-    if (!session?.userId)
-        return { isAuthenticated: false, userId: undefined }
-
-    return { isAuthenticated: true, userId: session.userId }
+    return verifySessionCookie(cookie)
 })
