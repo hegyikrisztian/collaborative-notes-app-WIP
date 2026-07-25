@@ -1,7 +1,6 @@
 import { fetchNotes } from "@/app/lib/data";
 import NoteCard from "./note-card";
 import { verifySession } from "@/app/lib/session";
-import { redirect } from "next/navigation";
 import { CreateNote } from "./modals/create-note";
 
 const NoteList = async () => {

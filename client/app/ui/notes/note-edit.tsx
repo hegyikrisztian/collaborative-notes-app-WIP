@@ -11,12 +11,38 @@ const initialState = {
 }
 
 
-export function NoteEdit({ note }: { note: Note }) {
-    const [ws, setWs] = useState<null | WebSocket>(new WebSocket('ws://localhost:8081'))  // TODO: replace with url from env
+export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
+    const ws = useRef<null | WebSocket>(null)
 
     const [internalContent, setInternalContent] = useState<string>(note.content);
     const editNoteContentWithId = editNoteContent.bind(null, note.id);
     const [state, editNoteContentWithIdFormAction, isPending] = useActionState(editNoteContentWithId, initialState)
+
+    useEffect(() => {
+        ws.current = new WebSocket('ws://localhost:8081');
+
+        ws.current.onopen = () => {
+            const initialPayload = {
+                noteId: note.id,
+                userId: userId
+            }
+
+            ws.current?.send(JSON.stringify(initialPayload))
+        }
+
+        ws.current.onmessage = (event: MessageEvent) => {
+            console.log(event.data);
+        }
+
+        ws.current.onclose = () => {
+            console.log('Connection closed');
+        }
+
+        const wsCurrent = ws.current
+        return () => {
+            wsCurrent.close()
+        }
+    }, [])
 
 
     function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
