@@ -6,7 +6,7 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
     const [internalContent, setInternalContent] = useState<string>(noteContent);
     // TODO: custom hooks for these!
     useEffect(() => {
-        ws.current = new WebSocket('ws://localhost:8081');
+        ws.current = new WebSocket(process.env.WEBSOCKET_URL as string);
 
         ws.current.onopen = () => {
             const initialPayload = {
@@ -43,9 +43,9 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
         }
 
         const wsCurrent = ws.current;
-        // return () => {
-        //     wsCurrent.close();
-        // }
+        return () => {
+            wsCurrent.close();
+        }
     }, [])
 
     function synchServerStateWithContent(content: string) {    
