@@ -65,3 +65,9 @@ export type User = {
     id: string,
     name: string
 }
+
+export const NOTE_EVENTS = {
+    NEW_NOTE_CONTENT: 'new-note-content',
+    NOTE_CONTENT_CHANGE: 'note-content-change',
+    ERROR: 'error'
+}

@@ -12,7 +12,6 @@ export class DB {
         }
 
         DB.instance = this;
-        console.log(process.env.POSTGRES_URL);
         DB.sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false, keep_alive: 1 });
     }
     

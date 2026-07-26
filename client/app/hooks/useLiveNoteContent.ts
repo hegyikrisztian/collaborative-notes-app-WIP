@@ -1,12 +1,14 @@
+"use client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { NOTE_EVENTS } from "../lib/definitions";
 
 export const useLiveNoteContent = (userId: string, noteId: string, noteContent: string) => {
     const ws = useRef<null | WebSocket>(null)
-
     const [internalContent, setInternalContent] = useState<string>(noteContent);
-    // TODO: custom hooks for these!
+
     useEffect(() => {
-        ws.current = new WebSocket(process.env.WEBSOCKET_URL as string);
+        console.log(ws.current);
+        ws.current = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL as string);
 
         ws.current.onopen = () => {
             const initialPayload = {
@@ -20,18 +22,18 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
         ws.current.onmessage = (event: MessageEvent) => {
             const data = JSON.parse(event.data)
             const type = data?.type
-            console.log(data);
+
             if (!type) {
                 console.warn('No type in server message');
                 return
             }
 
             switch (type) {
-                case 'new-note-content':
+                case NOTE_EVENTS.NEW_NOTE_CONTENT:
                     setInternalContent(data?.content)
                     break
-                case 'error':
-                    console.error(data?.message)
+                case NOTE_EVENTS.ERROR:
+                    console.log('Server error: ', data?.message)
                     break
                 default:
                     break
@@ -44,7 +46,8 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
 
         const wsCurrent = ws.current;
         return () => {
-            wsCurrent.close();
+            console.log('I close');
+            wsCurrent.close(1000, noteId);
         }
     }, [])
 
@@ -55,7 +58,7 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
         }
 
         ws.current?.send(JSON.stringify({
-            type: 'note-content-change',
+            type: NOTE_EVENTS.NOTE_CONTENT_CHANGE,
             noteId: noteId,
             content: content,
         }))

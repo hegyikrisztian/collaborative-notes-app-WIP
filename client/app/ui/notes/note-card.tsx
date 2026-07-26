@@ -21,7 +21,6 @@ export default function NoteCard({ note }: { note: Note }) {
 
     const dateComponents = note.last_modified.toString().split(' ');
     const shortDate = [dateComponents[1], dateComponents[2]].join(' ');
-    console.log(note.last_modified);
     const longDate = useMemo(() => constructLongDateTooltip(note.last_modified), [note.last_modified]);
     
     return (
