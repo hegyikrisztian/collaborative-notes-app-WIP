@@ -15,7 +15,6 @@ export async function GET(request: Request) {
         if (sanitizedQuery.length < 3)
             throw new Error('query must be at least 3 characters long');
         
-        console.log(sanitizedQuery);
         const users = await sql<User[]>`select id, name from users where name ilike ${'%' + sanitizedQuery + '%'}`;
 
         return Response.json({ users });

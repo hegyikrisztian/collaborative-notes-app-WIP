@@ -14,7 +14,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
     return (
         <div className="flex flex-col gap-6 w-full h-full">
-            <NoteEdit note={note}/>
+            <NoteEdit note={note} userId={userId as string}/>
         </div>
     )
 }

@@ -1,47 +1,13 @@
 "use client";
 import { Note } from "../../definitions";
-import { editNoteContent } from "../../lib/actions/notes";
-import { ChangeEvent, useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { XMarkIcon } from "@heroicons/react/16/solid";
 import { Breadcrumbs } from "../breadcrumbs";
-import { PencilIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { NoteActions } from "./note-actions";
-
-const initialState = {
-    message: ''
-}
+import { useLiveNoteContent } from "@/app/hooks/useLiveNoteContent";
 
 
-export function NoteEdit({ note }: { note: Note }) {
-    const [ws, setWs] = useState<null | WebSocket>(new WebSocket('ws://localhost:8081'))  // TODO: replace with url from env
-
-    const [internalContent, setInternalContent] = useState<string>(note.content);
-    const editNoteContentWithId = editNoteContent.bind(null, note.id);
-    const [state, editNoteContentWithIdFormAction, isPending] = useActionState(editNoteContentWithId, initialState)
-
-
-    function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
-        // setInternalContent(event.target.value)
-        // socket.emit('note-content-change', {
-        //     noteId: note.id,
-        //     content: event.target.value
-        // })
-    }
-
-    async function socketInitializer() {
-        // await fetch('/api/socket');
-        // socket = io();
-
-        // socket.on(`note-content-${note.id}-changed`, (content) => {
-        //     setInternalContent(content);
-        // });
-    }
-
-    useEffect(() => {
-        socketInitializer(); 
-    }, [])
-
-    const isChanged = useMemo(() => note.content !== internalContent, [internalContent]);
-
+export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
+    const { internalContent, handleContentChange } = useLiveNoteContent(userId, note.id, note.content)
     return (
         <>
             <div className="bg-gray-900 flex flex-col gap-6 justify-center items-center p-10 m-0 h-full">
@@ -74,19 +40,13 @@ export function NoteEdit({ note }: { note: Note }) {
                     </div>
                     <NoteActions id={note.id}/>
                 </div>
-                <form className="flex flex-col gap-1.5 w-full h-full" action={editNoteContentWithIdFormAction}>
-                    <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
-                    <div className="absolute bottom-10 right-10 flex flex-row gap-3 self-end">
-                        <button className="flex gap-2 rounded-full px-4 py-2.5 text-blue-50 border-blue-50 border cursor-pointer hover:scale-105 transition-[scale] text-xl" type="submit">
-                            <XMarkIcon className="w-5"/>
-                            Cancel
-                        </button>
-                        <button disabled={!isChanged || isPending} className="flex gap-2 disabled:opacity-50 rounded-full px-4 py-2.5 text-black bg-blue-50 not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-xl" type="submit">
-                            <PencilIcon className="w-5"/>
-                            {isPending ? 'Saving...' : 'Save'}
-                        </button>
-                    </div>
-                </form>
+                <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
+                <div className="absolute bottom-10 right-10 flex flex-row gap-3 self-end">
+                    <button className="flex gap-2 rounded-full px-4 py-2.5 text-blue-50 border-blue-50 border cursor-pointer hover:scale-105 transition-[scale] text-xl" type="submit">
+                        <XMarkIcon className="w-5"/>
+                        Cancel
+                    </button>
+                </div>
             </div>
         </>
     )

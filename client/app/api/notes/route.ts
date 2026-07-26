@@ -3,7 +3,6 @@ import postgres from "postgres";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { verifySession } from "@/app/lib/session";
-import { redirect } from "next/navigation";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -17,7 +16,6 @@ export async function POST(request: Request) {
         const session = await verifySession();
 
         const body = await request.json();  // TBD logged user
-        console.log(body);
         if (!body) {
             return NextResponse.json({ message: 'Provide body' }, { status: 400 });
         }

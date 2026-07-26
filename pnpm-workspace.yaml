@@ -1,0 +1,13 @@
+packages:
+  - "client"
+  - "ws-server"
+
+allowBuilds:
+  bcrypt: set this to true or false
+  esbuild: false
+  sharp: true
+  unrs-resolver: true
+
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

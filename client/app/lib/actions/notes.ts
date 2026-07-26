@@ -66,7 +66,6 @@ export async function deleteNote(id: string) {
 
 export async function addUsersToNote(id: string, state: AddUsersToNoteState, formData: FormData): Promise<AddUsersToNoteState> {
     try {
-        console.log(id);
         const { users } = AddUsersToNoteSchema.parse({
             users: formData.get('selectedUsers')
         });
@@ -81,7 +80,6 @@ export async function addUsersToNote(id: string, state: AddUsersToNoteState, for
                 creator_id: userId
             }
         ));
-        console.log(usersNotes);
         await sql`insert into users_notes ${ sql(usersNotes) }`;
         return { message: '' };
     }

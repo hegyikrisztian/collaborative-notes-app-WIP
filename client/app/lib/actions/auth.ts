@@ -13,7 +13,6 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function signup(state: SignupFormState, formData: FormData) {
     try {
-        console.log(formData.get('password'));
         const validatedFields = SignupFormSchema.safeParse({
             username: formData.get('username'),
             password: formData.get('password')
@@ -67,7 +66,6 @@ export async function login(state: LoginFormState, formData: FormData) {
             };
         }
 
-        console.log(user);
         const isPasswordValid = await bcrypt.compare(data.password, user.password);
         if (!isPasswordValid) {
             return {
