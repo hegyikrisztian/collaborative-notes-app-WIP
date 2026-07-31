@@ -1,7 +1,6 @@
 import { RefObject } from "react";
 
 const useDialog = (ref: RefObject<HTMLDialogElement | null>) => {
-
     function toggleDialog() {
         if (!ref.current)
             return

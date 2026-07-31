@@ -5,6 +5,7 @@ import { Breadcrumbs } from "../breadcrumbs";
 import { NoteActions } from "./note-actions";
 import { useLiveNoteContent } from "@/app/hooks/useLiveNoteContent";
 import { NOTE_CONTENT_STATUS } from "@/app/lib/definitions";
+import { SecondaryButton } from "../buttons/button";
 
 
 export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
@@ -46,12 +47,6 @@ export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
                     }
                 </div>
                 <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
-                <div className="absolute bottom-10 right-10 flex flex-row gap-3 self-end">
-                    <button className="flex gap-2 rounded-full px-4 py-2.5 text-blue-50 border-blue-50 border cursor-pointer hover:scale-105 transition-[scale] text-xl" type="submit">
-                        <XMarkIcon className="w-5"/>
-                        Cancel
-                    </button>
-                </div>
             </div>
         </>
     )

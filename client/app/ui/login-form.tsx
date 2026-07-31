@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { login } from "../lib/actions/auth";
 import { UserIcon, KeyIcon, ExclamationCircleIcon } from "@heroicons/react/16/solid";
+import { MainButton } from "./buttons/button";
 
 export const LoginForm = () => {
     const [state, loginAction, pending] = useActionState(login, undefined);
@@ -43,7 +44,7 @@ export const LoginForm = () => {
                         {state?.errors.errors.map((error, i) => <p className="flex gap-0.5" key={i}><ExclamationCircleIcon className="w-5" /> {error}</p>)}
                     </div>
                 }
-            <button className="flex self-end gap-2 disabled:opacity-50 rounded-full px-4 py-2 text-black bg-blue-50 not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md" disabled={pending} type="submit">Login</button>
+            <MainButton disabled={pending} type="submit">Login</MainButton>
         </form>
     );
 }
