@@ -1,8 +1,8 @@
 import { deleteNote } from "@/app/lib/actions/notes";
 import { TrashIcon } from "@heroicons/react/16/solid";
 
-export function DeleteNote({ id }: { id: string }) {
-    const deleteNoteWithId = deleteNote.bind(null, id);
+export function DeleteNote({ noteId }: { noteId: string }) {
+    const deleteNoteWithId = deleteNote.bind(null, noteId);
 
     // TBD add dialog
     return (

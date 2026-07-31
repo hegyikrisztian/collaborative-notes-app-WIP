@@ -1,13 +1,14 @@
 "use client";
 import { Note } from "../../definitions";
-import { XMarkIcon } from "@heroicons/react/16/solid";
+import { XMarkIcon, ExclamationCircleIcon } from "@heroicons/react/16/solid";
 import { Breadcrumbs } from "../breadcrumbs";
 import { NoteActions } from "./note-actions";
 import { useLiveNoteContent } from "@/app/hooks/useLiveNoteContent";
+import { NOTE_CONTENT_STATUS } from "@/app/lib/definitions";
 
 
 export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
-    const { internalContent, handleContentChange } = useLiveNoteContent(userId, note.id, note.content)
+    const { internalContent, handleContentChange, status } = useLiveNoteContent(userId, note.id, note.content)
     return (
         <>
             <div className="bg-gray-900 flex flex-col gap-6 justify-center items-center p-10 m-0 h-full">
@@ -38,7 +39,11 @@ export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
                         {/*  */}
 
                     </div>
-                    <NoteActions id={note.id}/>
+                    {status === NOTE_CONTENT_STATUS.ERROR ?
+                        <ExclamationCircleIcon className="w-5"/>
+                        :
+                        <NoteActions noteId={note.id} isSaving={status === NOTE_CONTENT_STATUS.PENDING}/>
+                    }
                 </div>
                 <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
                 <div className="absolute bottom-10 right-10 flex flex-row gap-3 self-end">
