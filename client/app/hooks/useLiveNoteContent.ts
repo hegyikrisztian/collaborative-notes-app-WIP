@@ -1,13 +1,14 @@
 "use client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { NOTE_EVENTS } from "../lib/definitions";
+import { NOTE_EVENTS, NOTE_CONTENT_STATUS } from "../lib/definitions";
 
 export const useLiveNoteContent = (userId: string, noteId: string, noteContent: string) => {
-    const ws = useRef<null | WebSocket>(null)
+    const ws = useRef<null | WebSocket>(null);
+    const [status, setStatus] = useState(NOTE_CONTENT_STATUS.FRESH)
+    
     const [internalContent, setInternalContent] = useState<string>(noteContent);
 
     useEffect(() => {
-        console.log(ws.current);
         ws.current = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL as string);
 
         ws.current.onopen = () => {
@@ -32,8 +33,17 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
                 case NOTE_EVENTS.NEW_NOTE_CONTENT:
                     setInternalContent(data?.content)
                     break
+                case NOTE_EVENTS.NOTE_CONTENT_SYNCH_COMPLETE:
+                    if (data?.noteId === noteId) {
+                        setStatus(NOTE_CONTENT_STATUS.FRESH);
+                    }
+                    else {
+                        console.warn(`${NOTE_EVENTS.NOTE_CONTENT_SYNCH_COMPLETE} sent incorrect data: ${data}`);
+                    }
+                    break
                 case NOTE_EVENTS.ERROR:
-                    console.log('Server error: ', data?.message)
+                    console.log('Server error: ', data?.message);
+                    setStatus(NOTE_CONTENT_STATUS.ERROR)
                     break
                 default:
                     break
@@ -46,7 +56,6 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
 
         const wsCurrent = ws.current;
         return () => {
-            console.log('I close');
             wsCurrent.close(1000, noteId);
         }
     }, [])
@@ -56,21 +65,21 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
             console.warn('No websocket connection available');
             return
         }
-
         ws.current?.send(JSON.stringify({
             type: NOTE_EVENTS.NOTE_CONTENT_CHANGE,
             noteId: noteId,
             content: content,
-        }))
+        }));
     }
 
     // Update internal state optimistically, so user's changes are instant
     function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
         const value = event.target.value;
         setInternalContent(value);
+        setStatus(NOTE_CONTENT_STATUS.PENDING);
 
         synchServerStateWithContent(value);
     }
 
-    return { internalContent, handleContentChange };
+    return { internalContent, handleContentChange, status };
 }

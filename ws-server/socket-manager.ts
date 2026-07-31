@@ -76,10 +76,15 @@ export class SocketManager {
                             if (await this.database.updateNoteContent(payload.noteId, payload.content)) {
                                 const newNoteContent: Note | undefined = await this.database.getNoteContent(payload.noteId);
                                 
+                                // Send synch complete status to same client
+                                socket.send(JSON.stringify({
+                                    type: NOTE_EVENTS.NOTE_CONTENT_SYNCH_COMPLETE,
+                                    noteId: newNoteContent?.id,
+                                }))
+
                                 // Send out the new content to every other connected client on the recieved note
                                 const connectedClients = this.clients.get(noteId)
                                 connectedClients?.forEach(connectedClient => {
-    
                                     const clientSocket = connectedClient.socket;
                                     if (clientSocket !== socket && clientSocket.readyState === WebSocket.OPEN) {
                                         clientSocket.send(JSON.stringify({
