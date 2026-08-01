@@ -8,8 +8,8 @@ export default function NavBar({ isAuthenticated }: { isAuthenticated: boolean }
     return (
         <nav className="shadow-2xl bg-gray-800 rounded-full mt-3 ms-3 w-fit">
             <ol className="flex gap-20 px-10 py-5">
-                <li className={pathname === '/home' ? activeClass : ''}>
-                    <Link href={'/home'}>Home</Link>
+                <li className={pathname === '/' ? activeClass : ''}>
+                    <Link href={'/'}>Home</Link>
                 </li>
                 {isAuthenticated ? 
                     <li className={pathname?.includes('/notes') ? activeClass : ''}>
