@@ -1,13 +1,13 @@
-import { TrashIcon } from "@heroicons/react/16/solid";
 import { ComponentProps } from "react";
 
+export const mainButtonClassName = "flex self-end gap-2 disabled:opacity-50 rounded-full px-4 py-2.5 text-black bg-blue-50 not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md";
+export const secondaryButtonClassName = "flex self-end gap-2 disabled:opacity-50 rounded-full px-4 py-2.5 text-blue-50 border-blue-50 border not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md";
 
 export const MainButton = (props: ComponentProps<'button'>) => {
     const { children, ...rest } = props; 
     return (
         <button
-            className="flex self-end gap-2 disabled:opacity-50 rounded-full px-4 py-2.5 text-black bg-blue-50 not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md"
-            
+            className={mainButtonClassName}
             {...rest}
         >
             {children}
@@ -19,7 +19,7 @@ export const SecondaryButton = (props: ComponentProps<'button'>) => {
     const { children, ...rest } = props; 
     return (
         <button
-            className="flex self-end gap-2 disabled:opacity-50 rounded-full px-4 py-2.5 text-blue-50 border-blue-50 border not-disabled:cursor-pointer hover:not-disabled:scale-105 transition-[scale] text-md"
+            className={secondaryButtonClassName}
             {...rest}
         >
             {children}
