@@ -1,12 +1,17 @@
 "use client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { NOTE_EVENTS, NOTE_CONTENT_STATUS } from "../lib/definitions";
+import { NOTE_EVENTS, NOTE_CONTENT_STATUS, User } from "../lib/definitions";
+import useNoteEditContext from "../contexts/useNoteEditContext";
 
-export const useLiveNoteContent = (userId: string, noteId: string, noteContent: string) => {
+export const useLiveNoteContent = () => {
+    const { note, userId } = useNoteEditContext();
+    const noteId = note.id;
+
     const ws = useRef<null | WebSocket>(null);
     const [status, setStatus] = useState(NOTE_CONTENT_STATUS.FRESH)
     
-    const [internalContent, setInternalContent] = useState<string>(noteContent);
+    const [internalContent, setInternalContent] = useState<string>(note.content);
+    const [connectedUsers, setConnectedUsers] = useState<User[]>([]);
 
     useEffect(() => {
         ws.current = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL as string);
@@ -32,7 +37,7 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
             switch (type) {
                 case NOTE_EVENTS.NEW_NOTE_CONTENT:
                     setInternalContent(data?.content)
-                    break
+                    break;
                 case NOTE_EVENTS.NOTE_CONTENT_SYNCH_COMPLETE:
                     if (data?.noteId === noteId) {
                         setStatus(NOTE_CONTENT_STATUS.FRESH);
@@ -40,13 +45,20 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
                     else {
                         console.warn(`${NOTE_EVENTS.NOTE_CONTENT_SYNCH_COMPLETE} sent incorrect data: ${data}`);
                     }
-                    break
+                    break;
+                case NOTE_EVENTS.NOTE_CONTENT_CONNECTED_USERS:
+                    if (!data?.users)
+                        console.error(`No users array for ${NOTE_EVENTS.NOTE_CONTENT_CONNECTED_USERS}, data: ${data}`);
+                    else {
+                        setConnectedUsers(data?.users);
+                    }
+                    break;
                 case NOTE_EVENTS.ERROR:
                     console.log('Server error: ', data?.message);
-                    setStatus(NOTE_CONTENT_STATUS.ERROR)
-                    break
+                    setStatus(NOTE_CONTENT_STATUS.ERROR);
+                    break;
                 default:
-                    break
+                    break;
             }
         }
 
@@ -81,5 +93,5 @@ export const useLiveNoteContent = (userId: string, noteId: string, noteContent: 
         synchServerStateWithContent(value);
     }
 
-    return { internalContent, handleContentChange, status };
+    return { internalContent, handleContentChange, status, connectedUsers };
 }

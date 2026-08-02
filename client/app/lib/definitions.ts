@@ -70,6 +70,7 @@ export const NOTE_EVENTS = {
     NEW_NOTE_CONTENT: 'new-note-content',
     NOTE_CONTENT_CHANGE: 'note-content-change',
     NOTE_CONTENT_SYNCH_COMPLETE: 'note-content-synch-complete',
+    NOTE_CONTENT_CONNECTED_USERS: 'note-content-connected-users',
     ERROR: 'error'
 }
 

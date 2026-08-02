@@ -1,6 +1,7 @@
 import { getNote } from "@/app/lib/data";
 import { verifySession } from "@/app/lib/session";
 import { NoteEdit } from "@/app/ui/notes/note-edit";
+import { NoteEditContextWrapper } from "@/app/ui/notes/note-edit-context-wrapper";
 import { redirect } from "next/navigation";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -14,7 +15,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
     return (
         <div className="flex flex-col gap-6 w-full h-full">
-            <NoteEdit note={note} userId={userId as string}/>
+            <NoteEditContextWrapper note={note} userId={userId as string}>
+                <NoteEdit />
+            </NoteEditContextWrapper>
         </div>
     )
 }
