@@ -1,6 +1,7 @@
 
 import postgres from "postgres";
 import { Note } from "../definitions";
+import { User } from "./definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', prepare: false });
 
@@ -31,5 +32,16 @@ export async function getNote(id: string) {
     catch (error) {
         console.error('DB error in fetchNotes', error);
         throw new Error('Error fetching notes');
+    }
+}
+
+export async function fetchUsers(userIds: string[]) {
+    try {
+        const users = await sql<User[]>`select id, name from users where id in (${userIds.join(', ')})`;
+        return users;
+    }
+    catch (error) {
+        console.error('DB error in fetchNotes', error);
+        throw new Error('Error fetching users');
     }
 }

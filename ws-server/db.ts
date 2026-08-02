@@ -1,5 +1,5 @@
 import postgres from "postgres";
-import { Note } from "./definitions";
+import { Note, User } from "./definitions";
 
 export class DB {
     static instance: DB;
@@ -35,7 +35,22 @@ export class DB {
             return rows[0];
         }
         catch (error) {
-            console.error(error)
+            console.error(error);
+            return undefined;
+        }
+    }
+
+    public async getUsers(userIds: string[]) {
+        try {
+            if (!userIds.length)
+                throw new Error('Provide userIds for getUserNames');
+
+            const rows = await DB.sql<User[]>`select * from users where id in (${userIds.join(', ')})`;
+            return rows;
+        }
+        catch (error) {
+            console.error(error);
+            return [];
         }
     }
 }

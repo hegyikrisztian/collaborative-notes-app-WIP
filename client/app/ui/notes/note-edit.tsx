@@ -1,15 +1,17 @@
 "use client";
-import { Note } from "../../definitions";
-import { XMarkIcon, ExclamationCircleIcon } from "@heroicons/react/16/solid";
+import { ExclamationCircleIcon } from "@heroicons/react/16/solid";
 import { Breadcrumbs } from "../breadcrumbs";
 import { NoteActions } from "./note-actions";
 import { useLiveNoteContent } from "@/app/hooks/useLiveNoteContent";
 import { NOTE_CONTENT_STATUS } from "@/app/lib/definitions";
-import { SecondaryButton } from "../buttons/button";
+import { ConnectedUsers } from "./connected-users";
+import useNoteEditContext from "@/app/contexts/useNoteEditContext";
 
 
-export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
-    const { internalContent, handleContentChange, status } = useLiveNoteContent(userId, note.id, note.content)
+export function NoteEdit() {
+    const { note } = useNoteEditContext();
+    const { internalContent, handleContentChange, status, connectedUsers } = useLiveNoteContent()
+
     return (
         <>
             <div className="bg-gray-900 flex flex-col gap-6 justify-center items-center p-10 m-0 h-full">
@@ -28,16 +30,9 @@ export function NoteEdit({ note, userId }: { note: Note, userId: string }) {
                                     name: note.title
                                 },
                             ]}
-                            />
+                        />
 
-                        {/* Dummy users list for now */}
-                        <ul className="flex flex-row gap-2">
-                            <li className="w-5 h-5 rounded-full bg-red-400 shadow-2xl p-0 m-0 leading-5 text-center text-xs">P</li>
-                            <li className="w-5 h-5 rounded-full bg-blue-400 shadow-2xl p-0 m-0 leading-5 text-center text-xs">M</li>
-                            <li className="w-5 h-5 rounded-full bg-green-400 shadow-2xl p-0 m-0 leading-5 text-center text-xs">S</li>
-                            <li className="w-5 h-5 rounded-full bg-purple-400 shadow-2xl p-0 m-0 leading-5 text-center text-xs">Z</li>
-                        </ul>
-                        {/*  */}
+                        <ConnectedUsers users={connectedUsers} />
 
                     </div>
                     {status === NOTE_CONTENT_STATUS.ERROR ?
