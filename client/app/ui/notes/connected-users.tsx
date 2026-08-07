@@ -13,7 +13,7 @@ const ConnectedUser = ({ user }: { user: User }) => {
     const color = randomColor();
     const initial = user.name[0].toUpperCase();
 
-    return <li style={{ backgroundColor: color, outline: userId === user.id ? `2px solid ${color}` : '' }} className={`w-5 h-5 rounded-full shadow-2xl p-0 m-0 leading-5 text-center text-xs`}>{initial}</li>
+    return <li style={{ backgroundColor: color, outlineOffset: '2px', outline: userId === user.id ? `2px solid ${color}` : '' }} className={`w-5 h-5 rounded-full shadow-2xl p-0 m-0 leading-5 text-center text-xs`}>{initial}</li>
 }
 
 export const ConnectedUsers = ({ users }: { users: User[] }) => {
