@@ -6,6 +6,7 @@ import { useLiveNoteContent } from "@/app/hooks/useLiveNoteContent";
 import { NOTE_CONTENT_STATUS } from "@/app/lib/definitions";
 import { ConnectedUsers } from "./connected-users";
 import useNoteEditContext from "@/app/contexts/useNoteEditContext";
+import { Toolbar } from "./toolbar";
 
 
 export function NoteEdit() {
@@ -41,7 +42,10 @@ export function NoteEdit() {
                         <NoteActions noteId={note.id} isSaving={status === NOTE_CONTENT_STATUS.PENDING}/>
                     }
                 </div>
-                <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
+                <div className="bg-gray-900 flex flex-col gap-1 justify-center w-full items-center m-0 h-full">
+                    <Toolbar />
+                    <textarea onChange={handleContentChange} value={internalContent} className="outline-1 outline-gray-600 rounded-2xl shadow-2xl h-full w-full p-5" name="content"></textarea>
+                </div>
             </div>
         </>
     )

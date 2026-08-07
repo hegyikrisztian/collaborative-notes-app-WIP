@@ -34,4 +34,13 @@ export const ErrorIconButton = (props: ComponentProps<'button'>) => {
             {children}
         </button>
     )
+
+}
+export const ToolbarButton = (props: ComponentProps<'button'>) => {
+    const { children, ...rest } = props; 
+    return (
+        <button {...rest} className="hover:bg-gray-800 transition-[background] rounded-sm cursor-pointer px-1.5">
+            {children}
+        </button>
+    )
 }
