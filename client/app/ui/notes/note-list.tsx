@@ -17,5 +17,5 @@ const NoteList = async () => {
         </>
     );
 }
- 
+
 export default NoteList;

@@ -9,7 +9,7 @@ export const LoginForm = () => {
     const [state, loginAction, pending] = useActionState(login, undefined);
 
     return (
-        <form className="flex flex-col gap-5 w-full outline-1 outline-gray-600 rounded-2xl p-10 shadow-2xl max-w-2xl" action={loginAction}>
+        <form className="flex flex-col gap-5 md:w-160 w-100 outline-1 outline-gray-600 rounded-2xl p-10 shadow-2xl" action={loginAction}>
             <fieldset className="relative flex flex-col gap-2 ">
                 <label htmlFor="username">Username</label>
                 <div className="flex items-center border border-gray-600 rounded-md">
