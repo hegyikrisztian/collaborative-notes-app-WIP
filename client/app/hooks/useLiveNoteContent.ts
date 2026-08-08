@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NOTE_EVENTS, NOTE_CONTENT_STATUS, User } from "../lib/definitions";
 import useNoteEditContext from "../contexts/useNoteEditContext";
 
@@ -73,10 +73,9 @@ export const useLiveNoteContent = () => {
     }, [])
 
     function synchServerStateWithContent(content: string) {    
-        if (!ws.current) {
-            console.warn('No websocket connection available');
-            return
-        }
+        
+        
+        setStatus(NOTE_CONTENT_STATUS.PENDING);
         ws.current?.send(JSON.stringify({
             type: NOTE_EVENTS.NOTE_CONTENT_CHANGE,
             noteId: noteId,
@@ -84,14 +83,19 @@ export const useLiveNoteContent = () => {
         }));
     }
 
-    // Update internal state optimistically, so user's changes are instant
-    function handleContentChange(event: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) {
-        const value = event.target.value;
-        setInternalContent(value);
-        setStatus(NOTE_CONTENT_STATUS.PENDING);
+    useEffect(() => {
+        if (!ws.current) {
+            console.warn('No websocket connection available');
+            return
+        }
 
-        synchServerStateWithContent(value);
-    }
+        if (ws.current.readyState === WebSocket.CONNECTING) {
+            console.log('WebSocket connecting');
+            return
+        }
 
-    return { internalContent, handleContentChange, status, connectedUsers };
+        synchServerStateWithContent(internalContent);
+    }, [internalContent])
+
+    return { internalContent, setInternalContent, status, connectedUsers };
 }

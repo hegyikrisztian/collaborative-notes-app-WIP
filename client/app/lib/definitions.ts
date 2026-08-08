@@ -79,3 +79,17 @@ export const NOTE_CONTENT_STATUS = {
     PENDING: 'pending',
     ERROR: 'error'
 }
+
+export const transformTypes = {
+    BOLD: "bold",
+    ITALIC: "italic",
+    LINE_THROUGH: 'line-through'
+} as const;
+
+export type TransformType = "bold" | "italic" | "line-through";
+
+export const transformTypeMarker = {
+    [transformTypes.BOLD]: '**',
+    [transformTypes.ITALIC]: '*',
+    [transformTypes.LINE_THROUGH]: '~~',
+};
