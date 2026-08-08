@@ -1,5 +1,6 @@
 import useNoteEditContext from "@/app/contexts/useNoteEditContext";
 import { User } from "@/app/lib/definitions";
+import { memo } from "react";
 
 
 function randomColor() {
@@ -16,7 +17,7 @@ const ConnectedUser = ({ user }: { user: User }) => {
     return <li style={{ backgroundColor: color, outlineOffset: '2px', outline: userId === user.id ? `2px solid ${color}` : '' }} className={`w-5 h-5 rounded-full shadow-2xl p-0 m-0 leading-5 text-center text-xs`}>{initial}</li>
 }
 
-export const ConnectedUsers = ({ users }: { users: User[] }) => {
+export const ConnectedUsers = memo(({ users }: { users: User[] }) => {
     if (!users.length)
         return null;
 
@@ -25,4 +26,4 @@ export const ConnectedUsers = ({ users }: { users: User[] }) => {
             {users.map((u, i) => <ConnectedUser key={`${u} - ${i}`} user={u} />)}
         </ul>
     );
-}
+})

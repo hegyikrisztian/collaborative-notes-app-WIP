@@ -1,29 +1,27 @@
+import { TransformType, transformTypes } from "@/app/lib/definitions"
 import { ToolbarButton } from "../buttons/button"
 
-type Props = {
- 
+
+interface ToolbarProps {
+    handleToolbarButtonClick: (transformType: TransformType) => () => void;
 }
-export const Toolbar = ({}: Props) => {
+
+export const Toolbar = ({ handleToolbarButtonClick }: ToolbarProps) => {
     return (
-        <ul className="self-start m-0 flex flex-row uppercase gap-2">
+        <ul className="self-start flex w-full flex-row uppercase pb-2 border-b-gray-600 border-b m-0">
             <li>
-                <ToolbarButton>
+                <ToolbarButton onClick={handleToolbarButtonClick(transformTypes.BOLD)}>
                     <b>B</b>
                 </ToolbarButton>
             </li>
             <li>
-                <ToolbarButton>
+                <ToolbarButton onClick={handleToolbarButtonClick(transformTypes.ITALIC)}>
                     <i>I</i>
                 </ToolbarButton>
             </li>
             <li>
-                <ToolbarButton>
-                    <u>U</u>
-                </ToolbarButton>
-            </li>
-            <li className="line-through">
-                <ToolbarButton>
-                    ab
+                <ToolbarButton onClick={handleToolbarButtonClick(transformTypes.LINE_THROUGH)}>
+                    <p className="m-0 p-0 line-through">ab</p>
                 </ToolbarButton>
             </li>
         </ul>
