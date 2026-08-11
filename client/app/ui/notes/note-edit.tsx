@@ -26,38 +26,40 @@ export function NoteEdit() {
             if (selectedText.length <= 0)
                 return;
 
-            let marker = transformTypeMarker[transformType];
-            if (!marker)
+            let targetMarker = transformTypeMarker[transformType];
+            if (!targetMarker)
                 throw new Error(`No marker string found; transformType ${transformType} is not member of transformTypeMarker`);
-
+            
             // Handle multiple markers on text (e.g.: bold and italic)
             // Array of markers and decide which to add / remove based on transformType
-            const hasStartMarker = internalContent.slice(start - marker.length, start) === marker;
-            const hasEndMarker = internalContent.slice(end, end + marker.length) === marker;
+            // TODO: Regexp here would be easier. Match marker exactly (by length, ** should not be a match for *)
+            const maxMarkerOffset = Object.values(transformTypeMarker).reduce((acc, curr) => acc + curr.length, 0);
+            const hasStartMarker = internalContent.slice(start - maxMarkerOffset, start).includes(targetMarker);
+            const hasEndMarker = internalContent.slice(end, end + maxMarkerOffset).includes(targetMarker);
 
             // Offset for restoring selection
-            const offset = marker.length;
+            const offset = targetMarker.length;
 
             // Text before and after
             let leading = internalContent.slice(0, start);
             let trailing = internalContent.slice(end, internalContent.length);
             if (hasStartMarker && hasEndMarker) {
                 // Remove marker
-                leading = leading.replace(marker, '');
-                trailing = trailing.replace(marker, '');
-                marker = '';
+                leading = leading.replace(targetMarker, '');
+                trailing = trailing.replace(targetMarker, '');
+                targetMarker = '';
             }
 
             // Mark text, even if there is a marker already at the end or start
             // Stitch together and add marker
-            const newContent = `${leading}${marker}${selectedText}${marker}${trailing}`;
+            const newContent = `${leading}${targetMarker}${selectedText}${targetMarker}${trailing}`;
             setInternalContent(newContent);
 
             // Defer restoring selection with setTimeout, since setter above happens after these would synchronously run
             setTimeout(() => {
                 contentRef.current?.focus();
 
-                if (marker.length === 0)
+                if (targetMarker.length === 0)
                     contentRef.current?.setSelectionRange(start - offset, end - offset);
                 else
                     contentRef.current?.setSelectionRange(start + offset, end + offset);
